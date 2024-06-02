@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.shape.Rectangle?>
@@ -31,12 +32,19 @@
    <top>
       <AnchorPane fx:id="draggableRegion" prefHeight="38.0" prefWidth="600.0" style="-fx-background-color: #f53368;" BorderPane.alignment="CENTER">
          <children>
-            <!-- TODO: THIS IS A BASIC IMPLEMENTATION OF A CLOSE BUTTON, STILL NEED TO ADD ICON AND MAKE IT SEXY -->
             <Button alignment="TOP_RIGHT" ellipsisString="" graphicTextGap="0.0" layoutX="562.0" layoutY="3.0" onAction="#handleCloseButtonAction" prefHeight="5.0" prefWidth="7.0" style="-fx-background-radius: 8;" text="Close">
                <graphic>
                   <FontIcon fill="#00b69b" iconLiteral="bi-x" iconSize="22" text="" />
-               </graphic></Button>
+               </graphic>
+            </Button>
          </children>
       </AnchorPane>
    </top>
+   <bottom>
+      <AnchorPane prefHeight="117.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="239.0" layoutY="50.0" prefHeight="38.0" prefWidth="155.0" styleClass="custom-label" text="CryptWolf" textFill="#f53368"/>
+         </children>
+      </AnchorPane>
+   </bottom>
 </BorderPane>

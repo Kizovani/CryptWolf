@@ -1,0 +1,9 @@
+@font-face {
+    font-family: 'yayusa';
+    src: url('/Fonts/yayusa.ttf');
+}
+
+.custom-label {
+    -fx-font-family: 'yayusa';
+    -fx-font-size: 50;
+}
