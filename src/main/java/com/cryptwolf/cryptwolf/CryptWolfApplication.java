@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import java.io.IOException;
+import java.util.Objects;
 
 /*COLORS:
 Funky Green: #00b69b
