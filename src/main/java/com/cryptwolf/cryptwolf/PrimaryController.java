@@ -60,11 +60,11 @@ public class PrimaryController {
     private void handleSelectSourceFolder(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Source Folder");
-        File inputDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
+        sourceDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
 
-        if (inputDirectory != null) {
+        if (sourceDirectory != null) {
             // Handle the selected directory
-            showAlert("Source Folder Selected", inputDirectory.getAbsolutePath());
+            showAlert("Source Folder Selected", sourceDirectory.getAbsolutePath());
         } else {
             showAlert("No Source Folder Selected", "Please select a source folder.");
         }
@@ -74,11 +74,11 @@ public class PrimaryController {
     private void handleSelectDestinationFolder(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Destination Folder");
-        File outputDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
+        destinationDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
 
-        if (outputDirectory != null) {
+        if (destinationDirectory != null) {
             // Handle the selected directory
-            showAlert("Destination Folder Selected", outputDirectory.getAbsolutePath());
+            showAlert("Destination Folder Selected", destinationDirectory.getAbsolutePath());
         } else {
             showAlert("No Destination Folder Selected", "Please select a destination folder.");
         }

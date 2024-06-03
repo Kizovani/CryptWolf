@@ -21,15 +21,6 @@
          </children>
       </AnchorPane>
    </left>
-   <right>
-      <AnchorPane prefHeight="288.0" prefWidth="281.0" BorderPane.alignment="CENTER">
-         <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="175.0" layoutY="113.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 50; -fx-arc-width: 50;" width="175.0" />
-            <FontIcon iconLiteral="bi-folder" iconSize="75" layoutX="50.0" layoutY="238.0" selectionStart="0" text="" />
-            <Button layoutY="113.0" mnemonicParsing="false" opacity="0.0" prefHeight="175.0" prefWidth="175.0" text="Destination Folder" />
-         </children>
-      </AnchorPane>
-   </right>
    <top>
       <AnchorPane fx:id="draggableRegion" prefHeight="37.0" prefWidth="600.0" style="-fx-background-color: #f53368;" BorderPane.alignment="CENTER">
          <children>
