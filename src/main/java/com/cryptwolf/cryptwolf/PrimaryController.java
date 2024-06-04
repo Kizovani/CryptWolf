@@ -12,12 +12,12 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
+import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
 
@@ -107,7 +107,6 @@ public class PrimaryController {
     @FXML
     private void toggleMode(ActionEvent event) {
         isEncryptMode = !isEncryptMode;
-        toggleButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
         actionButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
     }
 
@@ -129,10 +128,24 @@ public class PrimaryController {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(cipherMode, secretKey);
 
-        byte[] fileBytes = Files.readAllBytes(sourceFile);
-        byte[] processedBytes = cipher.doFinal(fileBytes);
+        try (FileInputStream fis = new FileInputStream(sourceFile.toFile());
+             FileOutputStream fos = new FileOutputStream(destFile.toFile());
+             CipherInputStream cis = (cipherMode == Cipher.DECRYPT_MODE) ? new CipherInputStream(fis, cipher) : null;
+             CipherOutputStream cos = (cipherMode == Cipher.ENCRYPT_MODE) ? new CipherOutputStream(fos, cipher) : null) {
 
-        Files.write(destFile, processedBytes);
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            if (cipherMode == Cipher.ENCRYPT_MODE) {
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    cos.write(buffer, 0, bytesRead);
+                }
+            } else {
+                while ((bytesRead = cis.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+            }
+        }
     }
 
     private void showAlert(String title, String message) {
