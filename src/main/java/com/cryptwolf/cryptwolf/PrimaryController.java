@@ -1,12 +1,11 @@
 package com.cryptwolf.cryptwolf;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -17,6 +16,7 @@ import java.io.FileOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import javax.crypto.*;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -49,6 +49,9 @@ public class PrimaryController {
 
     @FXML
     private AnchorPane draggableRegion;
+
+    @FXML
+    private ProgressBar progressBar;
 
     @FXML
     private void handleCloseButtonAction(ActionEvent event) {
@@ -87,22 +90,39 @@ public class PrimaryController {
     @FXML
     private void handleEncryptAndMoveFiles(ActionEvent event) {
         if (sourceDirectory != null && destinationDirectory != null) {
-            try {
-                if (isEncryptMode) {
-                    processFiles(sourceDirectory.toPath(), destinationDirectory.toPath(), Cipher.ENCRYPT_MODE);
-                    showAlert("Success", "Files encrypted and moved successfully.");
-                } else {
-                    processFiles(sourceDirectory.toPath(), destinationDirectory.toPath(), Cipher.DECRYPT_MODE);
-                    showAlert("Success", "Files decrypted and moved successfully.");
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        List<Path> files = Files.walk(sourceDirectory.toPath())
+                                .filter(Files::isRegularFile)
+                                .toList();
+
+                        int totalFiles = files.size();
+                        for (int i = 0; i < totalFiles; i++) {
+                            Path file = files.get(i);
+                            Path destFile = destinationDirectory.toPath().resolve(sourceDirectory.toPath().relativize(file));
+                            Files.createDirectories(destFile.getParent());
+                            processFile(file, destFile, isEncryptMode ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE);
+                            updateProgress(i + 1, totalFiles);
+                        }
+
+                        Platform.runLater(() -> showAlert("Success", "Files processed successfully."));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> showAlert("Error", "An error occurred: " + e.getMessage()));
+                    }
+                    return null;
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                showAlert("Error", "An error occurred: " + e.getMessage());
-            }
+            };
+
+            progressBar.progressProperty().bind(task.progressProperty());
+            new Thread(task).start();
         } else {
             showAlert("Error", "Please select both source and destination folders.");
         }
     }
+
 
     @FXML
     private void toggleMode(ActionEvent event) {
@@ -110,7 +130,7 @@ public class PrimaryController {
         actionButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
     }
 
-    private void processFiles(Path sourcePath, Path destinationPath, int cipherMode) throws Exception {
+    public void processFiles(Path sourcePath, Path destinationPath, int cipherMode) throws Exception {
         Files.walk(sourcePath)
                 .filter(Files::isRegularFile)
                 .forEach(file -> {
@@ -124,7 +144,7 @@ public class PrimaryController {
                 });
     }
 
-    private void processFile(Path sourceFile, Path destFile, int cipherMode) throws Exception {
+    public void processFile(Path sourceFile, Path destFile, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(cipherMode, secretKey);
 
