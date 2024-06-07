@@ -25,10 +25,10 @@ public class PrimaryController {
 
     private static final int ITERATION_COUNT = 65536; // Iteration count
 
-    private File sourceDirectory;
-    private File destinationDirectory;
+    File sourceDirectory;
+    File destinationDirectory;
     private SecretKey secretKey;
-    private boolean isEncryptMode = true;
+    boolean isEncryptMode = true;
     private double xOffset = 0;
     private double yOffset = 0;
     private byte[] keyBytes; // To store the generated key bytes

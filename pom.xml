@@ -11,12 +11,10 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-<junit.version>5.10.0</junit.version>  </properties>
-
+    <junit.version>5.10.0</junit.version>
+  </properties>
 
   <dependencies>
-
-
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
@@ -42,8 +40,6 @@
       <artifactId>ikonli-coreui-pack</artifactId>
       <version>12.3.1</version>
     </dependency>
-
-
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
@@ -68,13 +64,15 @@
       <version>4.0.16-alpha</version>
       <scope>test</scope>
     </dependency>
-
-
   </dependencies>
-
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.12.4</version>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -92,7 +90,7 @@
           <execution>
             <id>default-cli</id>
             <configuration>
-              <mainClass>com.cryptwolf.cryptwolf/com.cryptwolf.cryptwolf.CryptWolfApplication</mainClass>
+              <mainClass>com.cryptwolf.cryptwolf.CryptWolfApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>

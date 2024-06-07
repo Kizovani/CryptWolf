@@ -27,16 +27,21 @@ import java.util.Objects;
 
 public class CryptWolfApplication extends Application {
 
+    private static PrimaryController controller;
+
+
     @Override
     public void start(Stage primaryStage) throws IOException {
 
         FXMLLoader fxmlLoader = new FXMLLoader(CryptWolfApplication.class.getResource("primary.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        controller = fxmlLoader.getController();
         primaryStage.setTitle("CryptWolf");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Icons/CryptWolf_Icon_Transparent_CROPPED.png"))));
         primaryStage.initStyle(StageStyle.UNDECORATED); //Removing default windows title bar
         primaryStage.setScene(scene);
         primaryStage.show();
+
 
         // Debugging: Check if the font file is accessible
         /*
@@ -60,6 +65,11 @@ public class CryptWolfApplication extends Application {
         scene.getStylesheets().add(getClass().getResource("/Styles/styles.css").toExternalForm());
 
     }
+
+    public static PrimaryController getController() {
+        return controller;
+    }
+
 
     public static void main(String[] args) {
         launch();
