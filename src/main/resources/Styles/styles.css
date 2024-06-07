@@ -7,3 +7,11 @@
     -fx-font-family: 'yayusa';
     -fx-font-size: 50;
 }
+
+.button {
+    -fx-background-color: #2a0143;
+    -fx-background-radius: 5;
+    -fx-font-family: "Microsoft Tai Le";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}

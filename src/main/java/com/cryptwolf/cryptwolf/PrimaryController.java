@@ -6,11 +6,7 @@ import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ToggleButton;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
@@ -53,6 +49,12 @@ public class PrimaryController {
     private AnchorPane draggableRegion;
 
     @FXML
+    private Label sourceDirectoryLabel;
+
+    @FXML
+    private Label destinationDirectoryLabel;
+
+    @FXML
     private void handleCloseButtonAction(ActionEvent event) {
         clearSensitiveData();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -66,9 +68,9 @@ public class PrimaryController {
         sourceDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
 
         if (sourceDirectory != null) {
-            showAlert("Source Folder Selected", sourceDirectory.getAbsolutePath());
+            sourceDirectoryLabel.setText(sourceDirectory.getAbsolutePath());
         } else {
-            showAlert("No Source Folder Selected", "Please select a source folder.");
+            sourceDirectoryLabel.setText("No Source Folder Selected");
         }
     }
 
@@ -79,10 +81,20 @@ public class PrimaryController {
         destinationDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
 
         if (destinationDirectory != null) {
-            showAlert("Destination Folder Selected", destinationDirectory.getAbsolutePath());
+            destinationDirectoryLabel.setText(destinationDirectory.getAbsolutePath());
         } else {
-            showAlert("No Destination Folder Selected", "Please select a destination folder.");
+            destinationDirectoryLabel.setText("No Destination Folder Selected");
         }
+    }
+
+    @FXML
+    private void handleSwapFolders(ActionEvent event) {
+        File temp = sourceDirectory;
+        sourceDirectory = destinationDirectory;
+        destinationDirectory = temp;
+
+        sourceDirectoryLabel.setText(sourceDirectory != null ?  sourceDirectory.getAbsolutePath() : "No Source Folder Selected");
+        destinationDirectoryLabel.setText(destinationDirectory != null ? destinationDirectory.getAbsolutePath() : "No Destination Folder Selected");
     }
 
     @FXML
