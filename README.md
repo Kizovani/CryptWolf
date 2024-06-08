@@ -2,9 +2,9 @@ Hello! This readme will be completed with a full guide on the software, along wi
 
 Features to be added(in order):
 
-1.  testing suite (for all modes (128, 192, 256 key lengths) that will run appwide
+1.  add option to delete origin file after encrypt/decrypt (DONE)
 2.  add labels to see which directories are currently selected (DONE)
-3.  add option to delete origin file after encrypt/decrypt
+3.  testing suite (for all modes (128, 192, 256 key lengths) that will run appwide
 4.  implement passphrase
 5.  implement tray icon
 6.  implement context menu
