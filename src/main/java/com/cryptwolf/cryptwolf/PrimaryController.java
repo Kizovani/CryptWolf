@@ -16,6 +16,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
@@ -44,6 +45,9 @@ public class PrimaryController {
 
     @FXML
     private ChoiceBox<String> keyLengthChoiceBox;
+
+    @FXML
+    private CheckBox deleteOriginalCheckBox;
 
     @FXML
     private AnchorPane draggableRegion;
@@ -100,6 +104,18 @@ public class PrimaryController {
     @FXML
     private void handleEncryptAndMoveFiles(ActionEvent event) {
         if (sourceDirectory != null && destinationDirectory != null) {
+            try {
+                // Check if the source directory is empty
+                boolean isEmpty = Files.list(sourceDirectory.toPath()).findAny().isEmpty();
+                if (isEmpty) {
+                    showAlert("Error", "The source directory is empty. Please select a directory with files.");
+                    return;
+                }
+            } catch (IOException e) {
+                showAlert("Error", "An error occurred while checking the source directory: " + e.getMessage());
+                return;
+            }
+
             String keyLengthStr = keyLengthChoiceBox.getValue();
             if (keyLengthStr == null) {
                 showAlert("Error", "Please select a key length.");
@@ -140,6 +156,24 @@ public class PrimaryController {
                                 Files.createDirectories(destFile.getParent());
                                 processFile(file, destFile, isEncryptMode ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE);
                                 updateProgress(i + 1, totalFiles);
+
+                                // Delete the original file if the checkbox is selected
+                                if (deleteOriginalCheckBox.isSelected()) {
+                                    Files.delete(file);
+                                }
+                            }
+
+                            // Delete the source directory if the checkbox is selected
+                            if (deleteOriginalCheckBox.isSelected()) {
+                                Files.walk(sourceDirectory.toPath())
+                                        .sorted((path1, path2) -> path2.compareTo(path1)) // Sort in reverse order
+                                        .forEach(path -> {
+                                            try {
+                                                Files.delete(path);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                        });
                             }
 
                             Platform.runLater(() -> showAlert("Success", "Files processed successfully."));
