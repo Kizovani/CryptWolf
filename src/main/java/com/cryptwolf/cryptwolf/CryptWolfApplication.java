@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import java.io.IOException;
@@ -35,6 +36,7 @@ public class CryptWolfApplication extends Application {
 
         FXMLLoader fxmlLoader = new FXMLLoader(CryptWolfApplication.class.getResource("primary.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+        Font.loadFont(getClass().getResourceAsStream("/fonts/YAY USA Regular.ttf"), 10);
         controller = fxmlLoader.getController();
         primaryStage.setTitle("CryptWolf");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Icons/CryptWolf_Icon_Transparent_CROPPED.png"))));

@@ -102,5 +102,14 @@
         </executions>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>src/main/resources/Fonts</directory>
+        <includes>
+          <include>Brooklyn_Chill_Out.ttf</include>
+          <include>yayusa.tff</include>
+        </includes>
+      </resource>
+    </resources>
   </build>
 </project>
