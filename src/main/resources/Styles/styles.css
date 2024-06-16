@@ -1,6 +1,6 @@
 @font-face {
     font-family: 'yayusa';
-    src: url('/Fonts/Brooklyn_Chill_Out.ttf');
+    src: url('/src/main/resources/Fonts/yayusa.ttf');
 }
 
 .custom-label {

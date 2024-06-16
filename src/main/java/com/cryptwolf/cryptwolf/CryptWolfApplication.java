@@ -33,10 +33,9 @@ public class CryptWolfApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-
+        //Font.loadFont(getClass().getResourceAsStream("/Fonts/yayusa.ttf"), 10);
         FXMLLoader fxmlLoader = new FXMLLoader(CryptWolfApplication.class.getResource("primary.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        Font.loadFont(getClass().getResourceAsStream("/fonts/YAY USA Regular.ttf"), 10);
         controller = fxmlLoader.getController();
         primaryStage.setTitle("CryptWolf");
         primaryStage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResourceAsStream("/Icons/CryptWolf_Icon_Transparent_CROPPED.png"))));
