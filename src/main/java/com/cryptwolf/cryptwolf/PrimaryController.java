@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 
@@ -57,6 +58,9 @@ public class PrimaryController {
 
     @FXML
     private Label destinationDirectoryLabel;
+
+    @FXML
+    private Label titleLabel;
 
     @FXML
     private void handleCloseButtonAction(ActionEvent event) {
@@ -265,6 +269,9 @@ public class PrimaryController {
 
     @FXML
     public void initialize() {
+        Font customFont = Font.loadFont(getClass().getResource("/Fonts/yayusa.ttf").toExternalForm(), 40);
+        titleLabel.setFont(customFont);
+
         keyLengthChoiceBox.setItems(FXCollections.observableArrayList(
                 "128 bits",
                 "192 bits",

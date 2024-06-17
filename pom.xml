@@ -43,7 +43,7 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
-      <version>${junit.version}</version>
+      <version>5.10.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -72,6 +72,13 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.12.4</version>
+        <configuration>
+          <additionalClasspathElements>
+            <additionalClasspathElement>${project.build.directory}/test-classes</additionalClasspathElement>
+            <additionalClasspathElement>${project.build.directory}/classes</additionalClasspathElement>
+          </additionalClasspathElements>
+          <argLine>--add-modules org.junit.jupiter.api,org.testfx.junit5,org.testfx.core</argLine>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -102,14 +109,10 @@
         </executions>
       </plugin>
     </plugins>
-    <!--<resources>
+    <resources>
       <resource>
-        <directory>src/main/resources/Fonts</directory>
-        <includes>
-          <include>Brooklyn_Chill_Out.ttf</include>
-          <include>yayusa.tff</include>
-        </includes>
+        <directory>src/main/resources</directory>
       </resource>
-    </resources>-->
+    </resources>
   </build>
 </project>

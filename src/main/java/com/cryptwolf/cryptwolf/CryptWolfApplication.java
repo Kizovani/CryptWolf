@@ -15,7 +15,7 @@ Funky Green: #00b69b
 Cool Red/Pink: #f53368
 Dark Blue: #0a0021
 Dark Purple: #2a0143
-Skin Color LMFAO: #fefbd8
+File Color: #fefbd8
  */
 
 /*ICONS (In ikonli)
@@ -34,6 +34,7 @@ public class CryptWolfApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws IOException {
         //Font.loadFont(getClass().getResourceAsStream("/Fonts/yayusa.ttf"), 10);
+        Font customFont = Font.loadFont(getClass().getResource("/Fonts/yayusa.ttf").toExternalForm(), 40);
         FXMLLoader fxmlLoader = new FXMLLoader(CryptWolfApplication.class.getResource("primary.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
         controller = fxmlLoader.getController();

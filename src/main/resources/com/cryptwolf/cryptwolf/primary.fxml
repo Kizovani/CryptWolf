@@ -16,7 +16,6 @@
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #0a0021;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.cryptwolf.cryptwolf.PrimaryController">
    <left>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
@@ -35,7 +34,7 @@
                   <FontIcon fill="#00b69b" iconLiteral="bi-x" iconSize="22" text="" />
                </graphic>
             </Button>
-            <Label layoutX="6.0" layoutY="2.0" prefHeight="17.0" prefWidth="274.0" styleClass="custom-label" text="Crypt    Wolf" textFill="#00b69b" wrapText="true">
+            <Label fx:id="titleLabel" layoutX="6.0" layoutY="2.0" prefHeight="17.0" prefWidth="274.0" styleClass="title" stylesheets="@../../../Styles/styles.css" text="Crypt    Wolf" textFill="#00b69b" wrapText="true">
                <font>
                   <Font name="YAY USA Regular" size="40.0" />
                </font></Label>
@@ -67,9 +66,9 @@
                   <Font name="Microsoft Tai Le Bold" size="23.0" />
                </font>
             </Label>
-            <Button fx:id="actionButton" layoutX="27.0" layoutY="165.0" mnemonicParsing="false" onAction="#handleEncryptAndMoveFiles" prefHeight="85.0" prefWidth="145.0" style="-fx-background-color: #2a0143; -fx-background-radius: 5;" text="encrypt" textFill="#00b69b">
+            <Button fx:id="actionButton" graphicTextGap="1.0" layoutX="27.0" layoutY="165.0" mnemonicParsing="false" onAction="#handleEncryptAndMoveFiles" prefHeight="85.0" prefWidth="145.0" style="-fx-background-color: #2a0143; -fx-background-radius: 5;" text="Encrypt" textFill="#00b69b">
                <font>
-                  <Font name="YAY USA Regular" size="30.0" />
+                  <Font name="Microsoft Tai Le Bold" size="29.0" />
                </font>
             </Button>
             <ToggleButton fx:id="toggleButton" layoutX="34.0" layoutY="101.0" mnemonicParsing="false" onAction="#toggleMode" prefHeight="30.0" prefWidth="121.0" style="-fx-background-color: #2a0143; -fx-background-radius: 5;" text="Change Mode" textFill="#00b69b">
@@ -124,9 +123,9 @@
    <bottom>
       <AnchorPane prefHeight="93.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="259.0" layoutY="47.0" text="PROGRESS" textFill="#00b69b">
+            <Label layoutX="250.0" layoutY="47.0" text="PROGRESS" textFill="#00b69b">
                <font>
-                  <Font name="YAY USA Regular" size="21.0" />
+                  <Font name="Microsoft Tai Le Bold" size="20.0" />
                </font>
             </Label>
             <ProgressBar fx:id="progressBar" layoutY="70.0" prefHeight="18.0" prefWidth="600.0" progress="0.0" />

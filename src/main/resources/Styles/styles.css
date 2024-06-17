@@ -3,9 +3,10 @@
     src: url('/src/main/resources/Fonts/yayusa.ttf');
 }
 
-.custom-label {
+.title {
     -fx-font-family: 'yayusa';
-    -fx-font-size: 50;
+    -fx-font-size: 40;
+    -fx-fill: #00b69b;
 }
 
 .button {
