@@ -203,6 +203,7 @@ public class PrimaryController {
     private void toggleMode(ActionEvent event) {
         isEncryptMode = !isEncryptMode;
         actionButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
+        //TODO: TOGGLE BUTTONS FOR ENCRYPT OPTIONS INVISIBLE
     }
 
     private SecretKey generateKey(int keyLength) throws Exception {
