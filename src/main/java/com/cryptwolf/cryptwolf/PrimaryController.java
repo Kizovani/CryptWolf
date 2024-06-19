@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.crypto.*;
@@ -63,6 +64,13 @@ public class PrimaryController {
     private Label titleLabel;
 
     @FXML
+    private CheckBox useKeyFileCheckBox;
+
+    @FXML
+    private TextField keyFilePathField;
+
+
+    @FXML
     private void handleCloseButtonAction(ActionEvent event) {
         clearSensitiveData();
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -105,6 +113,20 @@ public class PrimaryController {
         destinationDirectoryLabel.setText(destinationDirectory != null ? destinationDirectory.getAbsolutePath() : "No Destination Folder Selected");
     }
 
+    //TODO: THIS IS FOR SELECTING THE KEY FOR DECRYPTION, STILL NEED TO ADD BUTTONS FOR THAT ON DECRYPT PAGE
+    @FXML
+    private void handleSelectKeyFile(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Select Key File");
+        File keyFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+        if (keyFile != null) {
+            keyFilePathField.setText(keyFile.getAbsolutePath());
+        } else {
+            keyFilePathField.setText("No Key File Selected");
+        }
+    }
+
     @FXML
     private void handleEncryptAndMoveFiles(ActionEvent event) {
         if (sourceDirectory != null && destinationDirectory != null) {
@@ -119,13 +141,16 @@ public class PrimaryController {
                 showAlert("Error", "An error occurred while checking the source directory: " + e.getMessage());
                 return;
             }
-
+            //TODO: CHECKOUT WHAT THIS SUGGESTION IS SAYING, I THINK ITS REALLY GOOD
             String keyLengthStr = keyLengthChoiceBox.getValue();
-            if (keyLengthStr == null) {
+
+            //TODO: UNSURE IF NECESSARY SINCE keyLengthChoiceBox should always have a value
+            /*
+             if (keyLengthStr == null) {
                 showAlert("Error", "Please select a key length.");
                 return;
             }
-
+             */
             int keyLength = 256;
             if (keyLengthStr.equals("128 bits")) {
                 keyLength = 128;
@@ -137,7 +162,13 @@ public class PrimaryController {
                 if (isEncryptMode) {
                     secretKey = generateKey(keyLength);
                     keyBytes = secretKey.getEncoded();
+                    if (useKeyFileCheckBox.isSelected()){
+                        //save the key to a file
+                        saveKeyToFile(keyBytes);
+                    }
+                    //save the key to a file
                 } else {
+
                     if (keyBytes == null) {
                         showAlert("Error", "No key found for decryption.");
                         return;
