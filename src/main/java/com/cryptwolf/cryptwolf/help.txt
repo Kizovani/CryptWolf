@@ -1,0 +1,174 @@
+If you want to incorporate the file key functionality conditionally based on whether a checkbox is checked, you can modify your code to check the state of the checkbox and then proceed accordingly. Here's how you can do it:
+
+    Add a CheckBox for using a key file in your FXML and a corresponding field in your controller.
+    Update the handleEncryptAndMoveFiles method to check the state of the checkbox and use the key file if the checkbox is selected.
+
+First, add a CheckBox and TextField for the key file path in your FXML file:
+
+<CheckBox fx:id="useKeyFileCheckBox" text="Use Key File" />
+<TextField fx:id="keyFilePathField" promptText="Key File Path" />
+<Button text="Select Key File" onAction="#handleSelectKeyFile" />
+
+
+In your controller class, add the corresponding fields and a method to handle the key file selection:
+
+@FXML
+private CheckBox useKeyFileCheckBox;
+
+@FXML
+private TextField keyFilePathField;
+
+@FXML
+private void handleSelectKeyFile(ActionEvent event) {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Select Key File");
+    File keyFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+
+    if (keyFile != null) {
+        keyFilePathField.setText(keyFile.getAbsolutePath());
+    } else {
+        keyFilePathField.setText("No Key File Selected");
+    }
+}
+
+
+Update the handleEncryptAndMoveFiles method to use the key file if the checkbox is selected
+
+@FXML
+private void handleEncryptAndMoveFiles(ActionEvent event) {
+    if (sourceDirectory != null && destinationDirectory != null) {
+        try {
+            // Check if the source directory is empty
+            boolean isEmpty = Files.list(sourceDirectory.toPath()).findAny().isEmpty();
+            if (isEmpty) {
+                showAlert("Error", "The source directory is empty. Please select a directory with files.");
+                return;
+            }
+        } catch (IOException e) {
+            showAlert("Error", "An error occurred while checking the source directory: " + e.getMessage());
+            return;
+        }
+
+        String keyLengthStr = keyLengthChoiceBox.getValue();
+        if (keyLengthStr == null) {
+            showAlert("Error", "Please select a key length.");
+            return;
+        }
+
+        int keyLength = 256;
+        if (keyLengthStr.equals("128 bits")) {
+            keyLength = 128;
+        } else if (keyLengthStr.equals("192 bits")) {
+            keyLength = 192;
+        }
+
+        try {
+            if (isEncryptMode) {
+                secretKey = generateKey(keyLength);
+                keyBytes = secretKey.getEncoded();
+                if (useKeyFileCheckBox.isSelected()) {
+                    // Save the key to a file
+                    saveKeyToFile(keyBytes);
+                }
+            } else {
+                if (useKeyFileCheckBox.isSelected()) {
+                    File keyFile = new File(keyFilePathField.getText());
+                    if (!keyFile.exists()) {
+                        showAlert("Error", "Key file not found for decryption.");
+                        return;
+                    }
+                    keyBytes = loadKeyFromFile(keyFile);
+                } else {
+                    if (keyBytes == null) {
+                        showAlert("Error", "No key found for decryption.");
+                        return;
+                    }
+                }
+                secretKey = new SecretKeySpec(keyBytes, "AES");
+            }
+
+            Task<Void> task = new Task<Void>() {
+                @Override
+                protected Void call() throws Exception {
+                    try {
+                        List<Path> files = Files.walk(sourceDirectory.toPath())
+                                .filter(Files::isRegularFile)
+                                .toList();
+
+                        int totalFiles = files.size();
+                        for (int i = 0; i < totalFiles; i++) {
+                            Path file = files.get(i);
+                            Path destFile = destinationDirectory.toPath().resolve(sourceDirectory.toPath().relativize(file));
+                            Files.createDirectories(destFile.getParent());
+                            processFile(file, destFile, isEncryptMode ? Cipher.ENCRYPT_MODE : Cipher.DECRYPT_MODE);
+                            updateProgress(i + 1, totalFiles);
+
+                            // Delete the original file if the checkbox is selected
+                            if (deleteOriginalCheckBox.isSelected()) {
+                                Files.delete(file);
+                            }
+                        }
+
+                        // Delete the source directory if the checkbox is selected
+                        if (deleteOriginalCheckBox.isSelected()) {
+                            Files.walk(sourceDirectory.toPath())
+                                    .sorted((path1, path2) -> path2.compareTo(path1)) // Sort in reverse order
+                                    .forEach(path -> {
+                                        try {
+                                            Files.delete(path);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                    });
+                        }
+
+                        Platform.runLater(() -> showAlert("Success", "Files processed successfully."));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        Platform.runLater(() -> showAlert("Error", "An error occurred: " + e.getMessage()));
+                    }
+                    return null;
+                }
+            };
+
+            progressBar.progressProperty().bind(task.progressProperty());
+            new Thread(task).start();
+        } catch (Exception e) {
+            showAlert("Error", "Failed to generate key: " + e.getMessage());
+        }
+    } else {
+        showAlert("Error", "Please select both source and destination folders.");
+    }
+}
+
+
+Add methods to save and load the key from a file:
+
+private void saveKeyToFile(byte[] keyBytes) throws IOException {
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Save Key File");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Key Files", "*.key"));
+    File keyFile = fileChooser.showSaveDialog(null);
+
+    if (keyFile != null) {
+        try (FileOutputStream fos = new FileOutputStream(keyFile)) {
+            fos.write(keyBytes);
+        }
+    } else {
+        showAlert("Error", "Key file not saved.");
+    }
+}
+
+private byte[] loadKeyFromFile(File keyFile) throws IOException {
+    byte[] keyBytes;
+    try (FileInputStream fis = new FileInputStream(keyFile)) {
+        keyBytes = new byte[(int) keyFile.length()];
+        fis.read(keyBytes);
+    }
+    return keyBytes;
+}
+
+
+With these changes, your application will now be able to optionally use a key file for encryption and decryption based on whether the useKeyFileCheckBox is selected.
+
+https://chatgpt.com/c/9a872cb8-3af3-43c3-87b1-038a0d686b8e
