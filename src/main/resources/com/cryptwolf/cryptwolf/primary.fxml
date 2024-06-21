@@ -52,10 +52,10 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
             <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="15.0" layoutY="55.0" />
-            <Button maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectSourceFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
+            <Button fx:id="sourceDirectoryButton" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectSourceFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutX="119.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
             <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="134.0" layoutY="55.0" />
-            <Button layoutX="119.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectDestinationFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
+            <Button fx:id="destinationDirectoryButton" layoutX="119.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectDestinationFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
             <FontIcon iconColor="#fefbd8" iconLiteral="cil-transfer" iconSize="40" layoutX="74.0" layoutY="55.0" />
             <Label layoutY="67.0" text="Source" textFill="#00b69b">
                <font>
@@ -125,12 +125,12 @@
             </CheckBox>
             <TextField layoutX="159.0" layoutY="120.0" promptText="Keyphrase" />
             <Label layoutX="159.0" layoutY="146.0" prefHeight="34.0" prefWidth="193.0" text="Please Dont Forget Your Keyphrase, Your Data Will Be Lost Without It!" textFill="#f53368" wrapText="true" />
-            <CheckBox fx:id="deleteOriginalCheckBox11" layoutX="158.0" layoutY="193.0" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
+            <CheckBox fx:id="useKeyFileCheckBox" layoutX="158.0" layoutY="193.0" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="13.0" />
                </font>
             </CheckBox>
-            <Button layoutX="159.0" layoutY="215.0" mnemonicParsing="false" text="Destination For Key File" />
+            <Button fx:id="keyDestinationDirectoryButton" layoutX="159.0" layoutY="215.0" mnemonicParsing="false" text="Destination For Key File" />
          </children>
       </AnchorPane>
    </left>

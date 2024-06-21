@@ -1,5 +1,8 @@
 package com.cryptwolf.cryptwolf;
+//TODO: NEED TO FIGURE OUT ERROR HANDLING WITH WHAT HAPPENS IF A KEYFILE SAVE PATH IS NOT SELECTED NOT WORKING
+//TODO: ADD "encrypt with existing keyfile" "merge" feature idrk how to do this
 
+import com.cryptwolf.cryptwolf.exceptions.KeyFileSaveCancelledException;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
@@ -8,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
@@ -30,6 +34,7 @@ public class PrimaryController {
 
     File sourceDirectory;
     File destinationDirectory;
+    File keyFileDirectory;
     private SecretKey secretKey;
     boolean isEncryptMode = true;
     private double xOffset = 0;
@@ -46,6 +51,12 @@ public class PrimaryController {
     private ProgressBar progressBar;
 
     @FXML
+    private VBox EncryptPageKeyphraseOptions;
+
+    @FXML
+    private VBox EncryptPageKeyFileOptions;
+
+    @FXML
     private ChoiceBox<String> keyLengthChoiceBox;
 
     @FXML
@@ -55,7 +66,13 @@ public class PrimaryController {
     private AnchorPane draggableRegion;
 
     @FXML
+    private Button sourceDirectoryButton;
+
+    @FXML
     private Label sourceDirectoryLabel;
+
+    @FXML
+    private Button destinationDirectoryButton;
 
     @FXML
     private Label destinationDirectoryLabel;
@@ -67,7 +84,10 @@ public class PrimaryController {
     private CheckBox useKeyFileCheckBox;
 
     @FXML
-    private TextField keyFilePathField;
+    private Button keyDestinationDirectoryButton;
+
+    @FXML
+    private Button getKeySourceDirectoryButton;
 
 
     @FXML
@@ -119,12 +139,15 @@ public class PrimaryController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Key File");
         File keyFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
-
+        //TODO: NO CLUE IF I WANT TO USE THIS BELOW:
+        /*
         if (keyFile != null) {
             keyFilePathField.setText(keyFile.getAbsolutePath());
         } else {
             keyFilePathField.setText("No Key File Selected");
         }
+         */
+
     }
 
     @FXML
@@ -164,14 +187,30 @@ public class PrimaryController {
                     keyBytes = secretKey.getEncoded();
                     if (useKeyFileCheckBox.isSelected()){
                         //save the key to a file
-                        saveKeyToFile(keyBytes);
+                        try {
+                            saveKeyToFile(keyBytes);
+                            if (!keyFileDirectory.exists()) {
+                                showAlert("Error", "No directory selected for the key file. Encryption aborted.");
+                                return;
+                            }
+                        } catch (KeyFileSaveCancelledException e) {
+                            e.printStackTrace();
+                            showAlert("Error", "An error occurred while saving the key to a file: " + e.getMessage());
+                            return;
+                        }
                     }
-                    //save the key to a file
                 } else {
-
-                    if (keyBytes == null) {
-                        showAlert("Error", "No key found for decryption.");
-                        return;
+                    if (useKeyFileCheckBox.isSelected()) {
+                        if (keyFileDirectory.exists()) {
+                            showAlert("Error" , "Key file not found or null for decryption");
+                            return;
+                        }
+                        keyBytes =  loadKeyFromFile(keyFileDirectory);
+                    } else {
+                        if (keyBytes == null) {
+                            showAlert("Error", "No key found for decryption.");
+                            return;
+                        }
                     }
                     secretKey = new SecretKeySpec(keyBytes, "AES");
                 }
@@ -243,19 +282,35 @@ public class PrimaryController {
         return keyGen.generateKey();
     }
 
-    private void processFiles(Path sourcePath, Path destinationPath, int cipherMode) throws Exception {
-        Files.walk(sourcePath)
-                .filter(Files::isRegularFile)
-                .forEach(file -> {
-                    try {
-                        Path destFile = destinationPath.resolve(sourcePath.relativize(file));
-                        Files.createDirectories(destFile.getParent());
-                        processFile(file, destFile, cipherMode);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                });
+    private void saveKeyToFile(byte[] keyBytes) throws IOException, KeyFileSaveCancelledException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Key File");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Key Files", "*.key"));
+        File keyFile = fileChooser.showSaveDialog(null); // Prompt to select directory and name for the new file
+
+        if (keyFile != null) {
+            try (FileOutputStream fos = new FileOutputStream(keyFile)) {
+                fos.write(keyBytes); // Write the key bytes to the new file
+                // Save the directory of the key file
+                keyFileDirectory = keyFile.getParentFile();
+            } catch (IOException e) {
+                showAlert("Error", "Failed to save key file.");
+                throw e;
+            }
+        } else {
+            throw new KeyFileSaveCancelledException("Key file not saved. User cancelled the save operation.");
+        }
     }
+
+    private byte[] loadKeyFromFile(File keyFile) throws IOException {
+        byte[] keyBytes;
+        try (FileInputStream fis = new FileInputStream(keyFile)) {
+            keyBytes = new byte[(int) keyFile.length()];
+            fis.read(keyBytes);
+        }
+        return keyBytes;
+    }
+
 
     private void processFile(Path sourceFile, Path destFile, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
