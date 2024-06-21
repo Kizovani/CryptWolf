@@ -51,10 +51,10 @@ public class PrimaryController {
     private ProgressBar progressBar;
 
     @FXML
-    private VBox EncryptPageKeyphraseOptions;
+    private VBox EncryptPageOptions;
 
     @FXML
-    private VBox EncryptPageKeyFileOptions;
+    private VBox DecryptPageOptions;
 
     @FXML
     private ChoiceBox<String> keyLengthChoiceBox;
@@ -274,6 +274,10 @@ public class PrimaryController {
         isEncryptMode = !isEncryptMode;
         actionButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
         //TODO: TOGGLE BUTTONS FOR ENCRYPT OPTIONS INVISIBLE
+        EncryptPageOptions.setVisible(isEncryptMode);
+        EncryptPageOptions.setManaged(isEncryptMode);
+        DecryptPageOptions.setVisible(!isEncryptMode);
+        DecryptPageOptions.setManaged(!isEncryptMode);
     }
 
     private SecretKey generateKey(int keyLength) throws Exception {
@@ -358,6 +362,11 @@ public class PrimaryController {
     public void initialize() {
         Font customFont = Font.loadFont(getClass().getResource("/Fonts/yayusa.ttf").toExternalForm(), 40);
         titleLabel.setFont(customFont);
+
+        EncryptPageOptions.setVisible(true);
+        EncryptPageOptions.setManaged(true);
+        DecryptPageOptions.setVisible(false);
+        DecryptPageOptions.setManaged(false);
 
         keyLengthChoiceBox.setItems(FXCollections.observableArrayList(
                 "128 bits",

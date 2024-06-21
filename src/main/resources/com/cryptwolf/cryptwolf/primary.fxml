@@ -13,6 +13,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
@@ -50,19 +52,19 @@
    <left>
       <AnchorPane prefHeight="264.0" prefWidth="692.0" BorderPane.alignment="CENTER">
          <children>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
-            <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="15.0" layoutY="55.0" />
-            <Button fx:id="sourceDirectoryButton" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectSourceFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutX="119.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
-            <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="134.0" layoutY="55.0" />
-            <Button fx:id="destinationDirectoryButton" layoutX="119.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectDestinationFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
-            <FontIcon iconColor="#fefbd8" iconLiteral="cil-transfer" iconSize="40" layoutX="74.0" layoutY="55.0" />
-            <Label layoutY="67.0" text="Source" textFill="#00b69b">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
+            <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="15.0" layoutY="58.0" />
+            <Button fx:id="sourceDirectoryButton" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectSourceFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutX="119.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
+            <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="134.0" layoutY="58.0" />
+            <Button fx:id="destinationDirectoryButton" layoutX="119.0" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectDestinationFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
+            <FontIcon iconColor="#fefbd8" iconLiteral="cil-transfer" iconSize="40" layoutX="74.0" layoutY="58.0" />
+            <Label layoutY="71.0" text="Source" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="21.0" />
                </font>
             </Label>
-            <Label layoutX="130.0" layoutY="65.0" text="Dest" textFill="#00b69b">
+            <Label layoutX="130.0" layoutY="69.0" text="Dest" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="23.0" />
                </font>
@@ -77,12 +79,12 @@
                   <Font name="Microsoft Tai Le Bold" size="15.0" />
                </font>
             </ToggleButton>
-            <Label layoutX="384.0" layoutY="184.0" text="Key Length:" textFill="#00b69b">
+            <Label layoutX="384.0" layoutY="143.0" text="Key Length:" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="21.0" />
                </font>
             </Label>
-            <ChoiceBox fx:id="keyLengthChoiceBox" layoutX="384.0" layoutY="214.0" prefWidth="200.0">
+            <ChoiceBox fx:id="keyLengthChoiceBox" layoutX="384.0" layoutY="173.0" prefWidth="200.0">
                <items>
                   <FXCollections fx:factory="observableArrayList">
                      <String fx:value="Select Key Length" />
@@ -112,37 +114,71 @@
                   <Font name="Microsoft Tai Le" size="13.0" />
                </font>
             </Label>
-            <Button layoutX="383.0" layoutY="114.0" mnemonicParsing="false" onAction="#handleSwapFolders" prefHeight="27.0" prefWidth="138.0" stylesheets="@../../../Styles/styles.css" text="Swap Source/Dest" textAlignment="CENTER" />
-            <CheckBox fx:id="deleteOriginalCheckBox" layoutX="384.0" layoutY="154.0" mnemonicParsing="false" text="Delete Original Files" textFill="#00b69b">
+            <Button layoutX="415.0" layoutY="86.0" mnemonicParsing="false" onAction="#handleSwapFolders" prefHeight="27.0" prefWidth="138.0" stylesheets="@../../../Styles/styles.css" text="Swap Source/Dest" textAlignment="CENTER" />
+            <CheckBox fx:id="deleteOriginalCheckBox" layoutX="411.0" layoutY="120.0" mnemonicParsing="false" text="Delete Original Files" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="13.0" />
                </font>
             </CheckBox>
-            <CheckBox fx:id="deleteOriginalCheckBox1" layoutX="158.0" layoutY="98.0" mnemonicParsing="false" text="Encrypt With Keyphrase" textFill="#00b69b">
-               <font>
-                  <Font name="Microsoft Tai Le Bold" size="13.0" />
-               </font>
-            </CheckBox>
-            <TextField layoutX="159.0" layoutY="120.0" promptText="Keyphrase" />
-            <Label layoutX="159.0" layoutY="146.0" prefHeight="34.0" prefWidth="193.0" text="Please Dont Forget Your Keyphrase, Your Data Will Be Lost Without It!" textFill="#f53368" wrapText="true" />
-            <CheckBox fx:id="useKeyFileCheckBox" layoutX="158.0" layoutY="193.0" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
-               <font>
-                  <Font name="Microsoft Tai Le Bold" size="13.0" />
-               </font>
-            </CheckBox>
-            <Button fx:id="keyDestinationDirectoryButton" layoutX="159.0" layoutY="215.0" mnemonicParsing="false" text="Destination For Key File" />
+            <StackPane layoutX="155.0" layoutY="112.0" prefHeight="130.0" prefWidth="217.0">
+               <children>
+                  <VBox fx:id="EncryptPageOptions" prefHeight="78.0" prefWidth="192.0">
+                     <children>
+                        <CheckBox fx:id="deleteOriginalCheckBox1" mnemonicParsing="false" text="Encrypt With Keyphrase" textFill="#00b69b">
+                           <font>
+                              <Font name="Microsoft Tai Le Bold" size="13.0" />
+                           </font>
+                        </CheckBox>
+                        <TextField prefHeight="25.0" prefWidth="194.0" promptText="Keyphrase" />
+                        <Label prefHeight="34.0" prefWidth="192.0" text="Please Dont Forget Your Keyphrase, Your Data Will Be Lost Without It!" textFill="#f53368" wrapText="true" />
+                        <VBox fx:id="EncryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
+                           <children>
+                              <CheckBox fx:id="useKeyFileCheckBox" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
+                                 <font>
+                                    <Font name="Microsoft Tai Le Bold" size="13.0" />
+                                 </font>
+                              </CheckBox>
+                              <Button fx:id="keyDestinationDirectoryButton" mnemonicParsing="false" text="Use Existing Key File" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+                  <VBox fx:id="DecryptPageOptions" prefHeight="78.0" prefWidth="192.0">
+                     <children>
+                        <CheckBox fx:id="deleteOriginalCheckBox11" mnemonicParsing="false" text="Decrypt With Keyphrase" textFill="#00b69b">
+                           <font>
+                              <Font name="Microsoft Tai Le Bold" size="13.0" />
+                           </font>
+                        </CheckBox>
+                        <TextField prefHeight="25.0" prefWidth="194.0" promptText="Keyphrase" />
+                        <Label prefHeight="16.0" prefWidth="192.0" text="Keyphrases Are Case-Sensitive!" textFill="#f53368" wrapText="true" />
+                        <VBox fx:id="DecryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
+                           <children>
+                              <CheckBox fx:id="useKeyFileCheckBox1" mnemonicParsing="false" text="Decrypt With Key File" textFill="#00b69b">
+                                 <font>
+                                    <Font name="Microsoft Tai Le Bold" size="13.0" />
+                                 </font>
+                              </CheckBox>
+                              <Button fx:id="keyDestinationDirectoryButton1" mnemonicParsing="false" text="Key File Destination" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
          </children>
       </AnchorPane>
    </left>
    <bottom>
-      <AnchorPane prefHeight="93.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+      <AnchorPane prefHeight="94.0" prefWidth="600.0" BorderPane.alignment="CENTER">
          <children>
-            <Label layoutX="250.0" layoutY="47.0" text="PROGRESS" textFill="#00b69b">
+            <Label layoutX="250.0" layoutY="77.0" text="PROGRESS" textFill="#00b69b">
                <font>
                   <Font name="Microsoft Tai Le Bold" size="20.0" />
                </font>
             </Label>
-            <ProgressBar fx:id="progressBar" layoutY="70.0" prefHeight="18.0" prefWidth="600.0" progress="0.0" />
-         </children></AnchorPane>
+            <ProgressBar fx:id="progressBar" layoutY="100.0" prefHeight="18.0" prefWidth="600.0" progress="0.0" />
+         </children>
+      </AnchorPane>
    </bottom>
 </BorderPane>
