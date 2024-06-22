@@ -1,6 +1,6 @@
 package com.cryptwolf.cryptwolf;
 //TODO: NEED TO FIGURE OUT ERROR HANDLING WITH WHAT HAPPENS IF A KEYFILE SAVE PATH IS NOT SELECTED NOT WORKING
-//TODO: ADD "encrypt with existing keyfile" "merge" feature idrk how to do this
+//TODO: WHEN SELECTING "USE EXISTING KEYFILE" AND CLICKING ENCRYPT, IT PROMPTS THE USER FOR A NEW KEYFILE!!!
 
 import com.cryptwolf.cryptwolf.exceptions.KeyFileSaveCancelledException;
 import javafx.application.Platform;
@@ -81,13 +81,16 @@ public class PrimaryController {
     private Label titleLabel;
 
     @FXML
-    private CheckBox useKeyFileCheckBox;
+    private CheckBox useKeyFileCheckBoxEncrypt;
 
     @FXML
-    private Button keyDestinationDirectoryButton;
+    private CheckBox useKeyFileCheckBoxDecrypt;
 
     @FXML
-    private Button getKeySourceDirectoryButton;
+    private Button useExistingKeyFileEncryptButton;
+
+    @FXML
+    private Button decryptWithKeyFileDirectoryButton;
 
 
     @FXML
@@ -185,7 +188,7 @@ public class PrimaryController {
                 if (isEncryptMode) {
                     secretKey = generateKey(keyLength);
                     keyBytes = secretKey.getEncoded();
-                    if (useKeyFileCheckBox.isSelected()){
+                    if (useKeyFileCheckBoxEncrypt.isSelected()){
                         //save the key to a file
                         try {
                             saveKeyToFile(keyBytes);
@@ -200,7 +203,7 @@ public class PrimaryController {
                         }
                     }
                 } else {
-                    if (useKeyFileCheckBox.isSelected()) {
+                    if (useKeyFileCheckBoxDecrypt.isSelected()) {
                         if (keyFileDirectory.exists()) {
                             showAlert("Error" , "Key file not found or null for decryption");
                             return;
@@ -315,6 +318,24 @@ public class PrimaryController {
         return keyBytes;
     }
 
+    @FXML
+    private void handleSelectExistingKeyFile(ActionEvent event) {
+        if (useKeyFileCheckBoxEncrypt.isSelected()) {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Select Existing Key File");
+            File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+            if (selectedFile != null) {
+                keyFileDirectory = selectedFile;
+                showAlert("Key File Selected", "Key file selected: " + selectedFile.getAbsolutePath());
+            } else {
+                showAlert("No Key File Selected", "No key file selected.");
+            }
+        } else {
+            showAlert("Error", "Please enable the 'Use Key File' checkbox before selecting a key file.");
+        }
+    }
+
+
 
     private void processFile(Path sourceFile, Path destFile, int cipherMode) throws Exception {
         Cipher cipher = Cipher.getInstance("AES");
@@ -367,6 +388,8 @@ public class PrimaryController {
         EncryptPageOptions.setManaged(true);
         DecryptPageOptions.setVisible(false);
         DecryptPageOptions.setManaged(false);
+
+        useExistingKeyFileEncryptButton.setOnAction(this::handleSelectExistingKeyFile);
 
         keyLengthChoiceBox.setItems(FXCollections.observableArrayList(
                 "128 bits",

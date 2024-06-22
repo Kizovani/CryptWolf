@@ -133,17 +133,17 @@
                         <Label prefHeight="34.0" prefWidth="192.0" text="Please Dont Forget Your Keyphrase, Your Data Will Be Lost Without It!" textFill="#f53368" wrapText="true" />
                         <VBox fx:id="EncryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
                            <children>
-                              <CheckBox fx:id="useKeyFileCheckBox" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
+                              <CheckBox fx:id="useKeyFileCheckBoxEncrypt" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
                                  <font>
                                     <Font name="Microsoft Tai Le Bold" size="13.0" />
                                  </font>
                               </CheckBox>
-                              <Button fx:id="keyDestinationDirectoryButton" mnemonicParsing="false" text="Use Existing Key File" />
+                              <Button fx:id="useExistingKeyFileEncryptButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Use Existing Key File" />
                            </children>
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="DecryptPageOptions" prefHeight="78.0" prefWidth="192.0">
+                  <VBox fx:id="DecryptPageOptions" opacity="0.0" prefHeight="78.0" prefWidth="192.0">
                      <children>
                         <CheckBox fx:id="deleteOriginalCheckBox11" mnemonicParsing="false" text="Decrypt With Keyphrase" textFill="#00b69b">
                            <font>
@@ -154,12 +154,12 @@
                         <Label prefHeight="16.0" prefWidth="192.0" text="Keyphrases Are Case-Sensitive!" textFill="#f53368" wrapText="true" />
                         <VBox fx:id="DecryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
                            <children>
-                              <CheckBox fx:id="useKeyFileCheckBox1" mnemonicParsing="false" text="Decrypt With Key File" textFill="#00b69b">
+                              <CheckBox fx:id="useKeyFileCheckBoxDecrypt" mnemonicParsing="false" text="Decrypt With Key File" textFill="#00b69b">
                                  <font>
                                     <Font name="Microsoft Tai Le Bold" size="13.0" />
                                  </font>
                               </CheckBox>
-                              <Button fx:id="keyDestinationDirectoryButton1" mnemonicParsing="false" text="Key File Destination" />
+                              <Button fx:id="decryptWithKeyFileDirectoryButton" mnemonicParsing="false" text="Key File Destination" />
                            </children>
                         </VBox>
                      </children>
