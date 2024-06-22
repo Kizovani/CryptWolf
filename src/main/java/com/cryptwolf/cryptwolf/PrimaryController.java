@@ -1,6 +1,6 @@
 package com.cryptwolf.cryptwolf;
-//TODO: NEED TO FIGURE OUT ERROR HANDLING WITH WHAT HAPPENS IF A KEYFILE SAVE PATH IS NOT SELECTED NOT WORKING
-//TODO: WHEN SELECTING "USE EXISTING KEYFILE" AND CLICKING ENCRYPT, IT PROMPTS THE USER FOR A NEW KEYFILE!!!
+//TODO: KEYFILES WORKING!!!! COMMIT WHEN READY
+//TODO: NEXT FEATURE IS TO IMPLEMENT PASSPHRASE
 
 import com.cryptwolf.cryptwolf.exceptions.KeyFileSaveCancelledException;
 import javafx.application.Platform;
@@ -39,7 +39,7 @@ public class PrimaryController {
     boolean isEncryptMode = true;
     private double xOffset = 0;
     private double yOffset = 0;
-    private byte[] keyBytes; // To store the generated key bytes
+    private byte[] keyBytes; // To store the generated key bytes for transport and reading
 
     @FXML
     private ToggleButton toggleButton;
@@ -136,22 +136,22 @@ public class PrimaryController {
         destinationDirectoryLabel.setText(destinationDirectory != null ? destinationDirectory.getAbsolutePath() : "No Destination Folder Selected");
     }
 
-    //TODO: THIS IS FOR SELECTING THE KEY FOR DECRYPTION, STILL NEED TO ADD BUTTONS FOR THAT ON DECRYPT PAGE
+    //TODO: THIS IS FOR SELECTING THE KEY FOR DECRYPTION IM PRETTY SURE I DONT NEED THIS SINCE THIS IS BASICALLY THE
+    //SAME AS handleSelectExistingKeyFile
+
+    /*
     @FXML
     private void handleSelectKeyFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select Key File");
-        File keyFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
+        keyFileDirectory = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
         //TODO: NO CLUE IF I WANT TO USE THIS BELOW:
-        /*
         if (keyFile != null) {
             keyFilePathField.setText(keyFile.getAbsolutePath());
         } else {
             keyFilePathField.setText("No Key File Selected");
         }
          */
-
-    }
 
     @FXML
     private void handleEncryptAndMoveFiles(ActionEvent event) {
@@ -167,16 +167,8 @@ public class PrimaryController {
                 showAlert("Error", "An error occurred while checking the source directory: " + e.getMessage());
                 return;
             }
-            //TODO: CHECKOUT WHAT THIS SUGGESTION IS SAYING, I THINK ITS REALLY GOOD
-            String keyLengthStr = keyLengthChoiceBox.getValue();
 
-            //TODO: UNSURE IF NECESSARY SINCE keyLengthChoiceBox should always have a value
-            /*
-             if (keyLengthStr == null) {
-                showAlert("Error", "Please select a key length.");
-                return;
-            }
-             */
+            String keyLengthStr = keyLengthChoiceBox.getValue();
             int keyLength = 256;
             if (keyLengthStr.equals("128 bits")) {
                 keyLength = 128;
@@ -186,29 +178,33 @@ public class PrimaryController {
 
             try {
                 if (isEncryptMode) {
-                    secretKey = generateKey(keyLength);
-                    keyBytes = secretKey.getEncoded();
-                    if (useKeyFileCheckBoxEncrypt.isSelected()){
-                        //save the key to a file
-                        try {
-                            saveKeyToFile(keyBytes);
-                            if (!keyFileDirectory.exists()) {
-                                showAlert("Error", "No directory selected for the key file. Encryption aborted.");
+                    if (useKeyFileCheckBoxEncrypt.isSelected() && keyFileDirectory != null) {
+                        keyBytes = loadKeyFromFile(keyFileDirectory);
+                        secretKey = new SecretKeySpec(keyBytes, "AES");
+                    } else {
+                        secretKey = generateKey(keyLength);
+                        keyBytes = secretKey.getEncoded();
+                        if (useKeyFileCheckBoxEncrypt.isSelected()) {
+                            try {
+                                saveKeyToFile(keyBytes);
+                                if (!keyFileDirectory.exists()) {
+                                    showAlert("Error", "No directory selected for the key file. Encryption aborted.");
+                                    return;
+                                }
+                            } catch (KeyFileSaveCancelledException e) {
+                                e.printStackTrace();
+                                showAlert("Error", "An error occurred while saving the key to a file: " + e.getMessage());
                                 return;
                             }
-                        } catch (KeyFileSaveCancelledException e) {
-                            e.printStackTrace();
-                            showAlert("Error", "An error occurred while saving the key to a file: " + e.getMessage());
-                            return;
                         }
                     }
                 } else {
                     if (useKeyFileCheckBoxDecrypt.isSelected()) {
-                        if (keyFileDirectory.exists()) {
-                            showAlert("Error" , "Key file not found or null for decryption");
+                        if (!keyFileDirectory.exists()) {
+                            showAlert("Error", "Key file not found or null for decryption");
                             return;
                         }
-                        keyBytes =  loadKeyFromFile(keyFileDirectory);
+                        keyBytes = loadKeyFromFile(keyFileDirectory);
                     } else {
                         if (keyBytes == null) {
                             showAlert("Error", "No key found for decryption.");
@@ -272,11 +268,12 @@ public class PrimaryController {
         }
     }
 
+
     @FXML
     private void toggleMode(ActionEvent event) {
         isEncryptMode = !isEncryptMode;
         actionButton.setText(isEncryptMode ? "Encrypt" : "Decrypt");
-        //TODO: TOGGLE BUTTONS FOR ENCRYPT OPTIONS INVISIBLE
+
         EncryptPageOptions.setVisible(isEncryptMode);
         EncryptPageOptions.setManaged(isEncryptMode);
         DecryptPageOptions.setVisible(!isEncryptMode);
@@ -320,7 +317,7 @@ public class PrimaryController {
 
     @FXML
     private void handleSelectExistingKeyFile(ActionEvent event) {
-        if (useKeyFileCheckBoxEncrypt.isSelected()) {
+        if (useKeyFileCheckBoxEncrypt.isSelected() || useKeyFileCheckBoxDecrypt.isSelected()) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Existing Key File");
             File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
@@ -331,7 +328,7 @@ public class PrimaryController {
                 showAlert("No Key File Selected", "No key file selected.");
             }
         } else {
-            showAlert("Error", "Please enable the 'Use Key File' checkbox before selecting a key file.");
+            showAlert("Error", "Please enable the 'Key File' checkbox before selecting a key file.");
         }
     }
 

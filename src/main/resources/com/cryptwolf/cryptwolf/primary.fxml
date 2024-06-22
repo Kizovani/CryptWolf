@@ -143,7 +143,7 @@
                         </VBox>
                      </children>
                   </VBox>
-                  <VBox fx:id="DecryptPageOptions" opacity="0.0" prefHeight="78.0" prefWidth="192.0">
+                  <VBox fx:id="DecryptPageOptions" prefHeight="78.0" prefWidth="192.0">
                      <children>
                         <CheckBox fx:id="deleteOriginalCheckBox11" mnemonicParsing="false" text="Decrypt With Keyphrase" textFill="#00b69b">
                            <font>
@@ -159,7 +159,7 @@
                                     <Font name="Microsoft Tai Le Bold" size="13.0" />
                                  </font>
                               </CheckBox>
-                              <Button fx:id="decryptWithKeyFileDirectoryButton" mnemonicParsing="false" text="Key File Destination" />
+                              <Button fx:id="decryptWithKeyFileDirectoryButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Key File Destination" />
                            </children>
                         </VBox>
                      </children>
