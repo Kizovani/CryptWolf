@@ -42,7 +42,3 @@ Steps to Decrypt Files
 
     Start Decryption:
         Click the "Decrypt" button to begin decrypting the files in the source directory. Monitor progress using the progress bar.
-
-
-
-
