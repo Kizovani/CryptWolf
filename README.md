@@ -11,18 +11,16 @@ Steps to Encrypt Files
         Click on the "Destination Directory" button and choose the folder where you want the encrypted files to be saved.
 
     Choose Key Length:
-        Use the "Key Length" dropdown to select the desired key length.
+        Use the "Key Length" dropdown to select the desired key length. Default is 256 bits
 
     Select Encryption Key Method:
         Enter a password in the password field to derive an encryption key or
         Check the "Use Key File" checkbox and select an existing key file to use for encryption or
-        Let CryptWolf generate a new key.
+        let CryptWolf generate a new key by not selecting one, where after performing the next step you
+        will then be prompted for directory to save your key file to.
 
-    Save Key File (Optional):
-        If a new key is generated, choose to save it by checking the "Save Key File" checkbox.
-
-    Start Encryption:
-        Click the "Encrypt" button to begin encrypting the files in the source directory. Monitor progress using the progress bar.
+    Encrypt!
+    
 
 Steps to Decrypt Files
 
