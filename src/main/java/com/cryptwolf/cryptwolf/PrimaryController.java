@@ -1,5 +1,4 @@
 package com.cryptwolf.cryptwolf;
-//TODO: KEYFILES WORKING!!!! COMMIT WHEN READY
 //TODO: NEXT FEATURE IS TO IMPLEMENT PASSPHRASE
 
 import com.cryptwolf.cryptwolf.exceptions.KeyFileSaveCancelledException;
@@ -18,6 +17,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import javax.crypto.*;
+import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.File;
 import java.io.FileInputStream;
@@ -26,11 +26,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.SecureRandom;
+import java.security.spec.KeySpec;
 import java.util.List;
 
 public class PrimaryController {
-
-    private static final int ITERATION_COUNT = 65536; // Iteration count
 
     File sourceDirectory;
     File destinationDirectory;
@@ -81,16 +80,28 @@ public class PrimaryController {
     private Label titleLabel;
 
     @FXML
-    private CheckBox useKeyFileCheckBoxEncrypt;
+    private CheckBox keyFileCheckBoxEncrypt;
 
     @FXML
-    private CheckBox useKeyFileCheckBoxDecrypt;
+    private CheckBox keyFileCheckBoxDecrypt;
 
     @FXML
-    private Button useExistingKeyFileEncryptButton;
+    private CheckBox encryptWithPhraseCheckBox;
 
     @FXML
-    private Button decryptWithKeyFileDirectoryButton;
+    private CheckBox decryptWithPhraseCheckBox;
+
+    @FXML
+    private Button existingKeyFileEncryptButton;
+
+    @FXML
+    private Button keyFileDecryptButton;
+
+    @FXML
+    private PasswordField passwordFieldEncrypt;
+
+    @FXML
+    private PasswordField passwordFieldDecrypt;
 
 
     @FXML
@@ -101,28 +112,24 @@ public class PrimaryController {
     }
 
     @FXML
-    private void handleSelectSourceFolder(ActionEvent event) {
+    private void handleSelectFolder(ActionEvent event) {
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Source Folder");
-        sourceDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
+        File selectedDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
 
-        if (sourceDirectory != null) {
-            sourceDirectoryLabel.setText(sourceDirectory.getAbsolutePath());
-        } else {
-            sourceDirectoryLabel.setText("No Source Folder Selected");
-        }
-    }
-
-    @FXML
-    private void handleSelectDestinationFolder(ActionEvent event) {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Select Destination Folder");
-        destinationDirectory = directoryChooser.showDialog(((Node) event.getSource()).getScene().getWindow());
-
-        if (destinationDirectory != null) {
-            destinationDirectoryLabel.setText(destinationDirectory.getAbsolutePath());
-        } else {
-            destinationDirectoryLabel.setText("No Destination Folder Selected");
+        if (event.getSource() == sourceDirectoryButton) {
+            if (selectedDirectory != null) {
+                sourceDirectory = selectedDirectory;
+                sourceDirectoryLabel.setText(sourceDirectory.getAbsolutePath());
+            } else {
+                sourceDirectoryLabel.setText("No Source Folder Selected");
+            }
+        } else if (event.getSource() == destinationDirectoryButton) {
+            if (selectedDirectory != null) {
+                destinationDirectory = selectedDirectory;
+                destinationDirectoryLabel.setText(destinationDirectory.getAbsolutePath());
+            } else {
+                destinationDirectoryLabel.setText("No Destination Folder Selected");
+            }
         }
     }
 
@@ -135,23 +142,6 @@ public class PrimaryController {
         sourceDirectoryLabel.setText(sourceDirectory != null ?  sourceDirectory.getAbsolutePath() : "No Source Folder Selected");
         destinationDirectoryLabel.setText(destinationDirectory != null ? destinationDirectory.getAbsolutePath() : "No Destination Folder Selected");
     }
-
-    //TODO: THIS IS FOR SELECTING THE KEY FOR DECRYPTION IM PRETTY SURE I DONT NEED THIS SINCE THIS IS BASICALLY THE
-    //SAME AS handleSelectExistingKeyFile
-
-    /*
-    @FXML
-    private void handleSelectKeyFile(ActionEvent event) {
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Select Key File");
-        keyFileDirectory = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
-        //TODO: NO CLUE IF I WANT TO USE THIS BELOW:
-        if (keyFile != null) {
-            keyFilePathField.setText(keyFile.getAbsolutePath());
-        } else {
-            keyFilePathField.setText("No Key File Selected");
-        }
-         */
 
     @FXML
     private void handleEncryptAndMoveFiles(ActionEvent event) {
@@ -178,13 +168,16 @@ public class PrimaryController {
 
             try {
                 if (isEncryptMode) {
-                    if (useKeyFileCheckBoxEncrypt.isSelected() && keyFileDirectory != null) {
+                    String password = passwordFieldEncrypt.getText();
+                    if (!password.isEmpty()) {
+                        secretKey = generateKeyFromPassword(password, keyLength);
+                    } else if (keyFileCheckBoxEncrypt.isSelected() && keyFileDirectory != null) {
                         keyBytes = loadKeyFromFile(keyFileDirectory);
                         secretKey = new SecretKeySpec(keyBytes, "AES");
                     } else {
                         secretKey = generateKey(keyLength);
                         keyBytes = secretKey.getEncoded();
-                        if (useKeyFileCheckBoxEncrypt.isSelected()) {
+                        if (keyFileCheckBoxEncrypt.isSelected()) {
                             try {
                                 saveKeyToFile(keyBytes);
                                 if (!keyFileDirectory.exists()) {
@@ -199,19 +192,23 @@ public class PrimaryController {
                         }
                     }
                 } else {
-                    if (useKeyFileCheckBoxDecrypt.isSelected()) {
+                    String password = passwordFieldDecrypt.getText();
+                    if (!password.isEmpty()) {
+                        secretKey = generateKeyFromPassword(password, keyLength);
+                    } else if (keyFileCheckBoxDecrypt.isSelected()) {
                         if (!keyFileDirectory.exists()) {
                             showAlert("Error", "Key file not found or null for decryption");
                             return;
                         }
                         keyBytes = loadKeyFromFile(keyFileDirectory);
+                        secretKey = new SecretKeySpec(keyBytes, "AES");
                     } else {
                         if (keyBytes == null) {
                             showAlert("Error", "No key found for decryption.");
                             return;
                         }
+                        secretKey = new SecretKeySpec(keyBytes, "AES");
                     }
-                    secretKey = new SecretKeySpec(keyBytes, "AES");
                 }
 
                 Task<Void> task = new Task<Void>() {
@@ -278,6 +275,11 @@ public class PrimaryController {
         EncryptPageOptions.setManaged(isEncryptMode);
         DecryptPageOptions.setVisible(!isEncryptMode);
         DecryptPageOptions.setManaged(!isEncryptMode);
+
+        keyFileCheckBoxDecrypt.setSelected(false);
+        keyFileCheckBoxEncrypt.setSelected(false);
+        encryptWithPhraseCheckBox.setSelected(false);
+        decryptWithPhraseCheckBox.setSelected(false);
     }
 
     private SecretKey generateKey(int keyLength) throws Exception {
@@ -285,6 +287,14 @@ public class PrimaryController {
         keyGen.init(keyLength, new SecureRandom());
         return keyGen.generateKey();
     }
+
+    private SecretKey generateKeyFromPassword(String password, int keyLength) throws Exception {
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), new byte[16], 65536, keyLength);
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        byte[] keyBytes = factory.generateSecret(spec).getEncoded();
+        return new SecretKeySpec(keyBytes, "AES");
+    }
+
 
     private void saveKeyToFile(byte[] keyBytes) throws IOException, KeyFileSaveCancelledException {
         FileChooser fileChooser = new FileChooser();
@@ -317,7 +327,7 @@ public class PrimaryController {
 
     @FXML
     private void handleSelectExistingKeyFile(ActionEvent event) {
-        if (useKeyFileCheckBoxEncrypt.isSelected() || useKeyFileCheckBoxDecrypt.isSelected()) {
+        if (keyFileCheckBoxEncrypt.isSelected() || keyFileCheckBoxDecrypt.isSelected()) {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Select Existing Key File");
             File selectedFile = fileChooser.showOpenDialog(((Node) event.getSource()).getScene().getWindow());
@@ -386,7 +396,7 @@ public class PrimaryController {
         DecryptPageOptions.setVisible(false);
         DecryptPageOptions.setManaged(false);
 
-        useExistingKeyFileEncryptButton.setOnAction(this::handleSelectExistingKeyFile);
+        existingKeyFileEncryptButton.setOnAction(this::handleSelectExistingKeyFile);
 
         keyLengthChoiceBox.setItems(FXCollections.observableArrayList(
                 "128 bits",
@@ -405,5 +415,48 @@ public class PrimaryController {
             stage.setX(event.getScreenX() - xOffset);
             stage.setY(event.getScreenY() - yOffset);
         });
+
+        keyFileCheckBoxEncrypt.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                keyFileCheckBoxDecrypt.setSelected(false);
+                encryptWithPhraseCheckBox.setSelected(false);
+                passwordFieldEncrypt.setDisable(true);
+            }
+            existingKeyFileEncryptButton.setDisable(!newValue);
+        });
+
+        keyFileCheckBoxDecrypt.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                keyFileCheckBoxEncrypt.setSelected(false);
+                decryptWithPhraseCheckBox.setSelected(false);
+                passwordFieldDecrypt.setDisable(true);
+            }
+            keyFileDecryptButton.setDisable(!newValue);
+        });
+
+        encryptWithPhraseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                keyFileCheckBoxEncrypt.setSelected(false);
+                keyFileCheckBoxDecrypt.setSelected(false);
+                passwordFieldEncrypt.setDisable(false);
+            } else {
+                passwordFieldEncrypt.setDisable(true);
+            }
+        });
+
+        decryptWithPhraseCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                keyFileCheckBoxEncrypt.setSelected(false);
+                keyFileCheckBoxDecrypt.setSelected(false);
+                passwordFieldDecrypt.setDisable(false);
+            } else {
+                passwordFieldDecrypt.setDisable(true);
+            }
+        });
+
+        existingKeyFileEncryptButton.setDisable(!keyFileCheckBoxEncrypt.isSelected());
+        keyFileDecryptButton.setDisable(!keyFileCheckBoxDecrypt.isSelected());
+        passwordFieldEncrypt.setDisable(!encryptWithPhraseCheckBox.isSelected());
+        passwordFieldDecrypt.setDisable(!decryptWithPhraseCheckBox.isSelected());
     }
 }

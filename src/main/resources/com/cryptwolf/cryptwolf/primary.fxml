@@ -6,8 +6,8 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -54,10 +54,10 @@
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
             <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="15.0" layoutY="58.0" />
-            <Button fx:id="sourceDirectoryButton" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectSourceFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
+            <Button fx:id="sourceDirectoryButton" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectFolder" opacity="0.0" prefHeight="70.0" text="Source Folder" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fefbd8" height="70.0" layoutX="119.0" layoutY="3.0" stroke="BLACK" strokeType="INSIDE" style="-fx-arc-height: 20; -fx-arc-width: 20;" width="70.0" />
             <FontIcon iconLiteral="bi-folder" iconSize="40" layoutX="134.0" layoutY="58.0" />
-            <Button fx:id="destinationDirectoryButton" layoutX="119.0" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectDestinationFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
+            <Button fx:id="destinationDirectoryButton" layoutX="119.0" layoutY="3.0" maxWidth="70.0" mnemonicParsing="false" onAction="#handleSelectFolder" opacity="0.0" prefHeight="70.0" text="Destination Folder" />
             <FontIcon iconColor="#fefbd8" iconLiteral="cil-transfer" iconSize="40" layoutX="74.0" layoutY="58.0" />
             <Label layoutY="71.0" text="Source" textFill="#00b69b">
                <font>
@@ -124,42 +124,42 @@
                <children>
                   <VBox fx:id="EncryptPageOptions" prefHeight="78.0" prefWidth="192.0">
                      <children>
-                        <CheckBox fx:id="deleteOriginalCheckBox1" mnemonicParsing="false" text="Encrypt With Keyphrase" textFill="#00b69b">
+                        <CheckBox fx:id="encryptWithPhraseCheckBox" mnemonicParsing="false" text="Encrypt With Keyphrase" textFill="#00b69b">
                            <font>
                               <Font name="Microsoft Tai Le Bold" size="13.0" />
                            </font>
                         </CheckBox>
-                        <TextField prefHeight="25.0" prefWidth="194.0" promptText="Keyphrase" />
+                        <PasswordField fx:id="passwordFieldEncrypt" />
                         <Label prefHeight="34.0" prefWidth="192.0" text="Please Dont Forget Your Keyphrase, Your Data Will Be Lost Without It!" textFill="#f53368" wrapText="true" />
                         <VBox fx:id="EncryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
                            <children>
-                              <CheckBox fx:id="useKeyFileCheckBoxEncrypt" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
+                              <CheckBox fx:id="keyFileCheckBoxEncrypt" mnemonicParsing="false" text="Encrypt With Key File" textFill="#00b69b">
                                  <font>
                                     <Font name="Microsoft Tai Le Bold" size="13.0" />
                                  </font>
                               </CheckBox>
-                              <Button fx:id="useExistingKeyFileEncryptButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Use Existing Key File" />
+                              <Button fx:id="existingKeyFileEncryptButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Use Existing Key File" />
                            </children>
                         </VBox>
                      </children>
                   </VBox>
                   <VBox fx:id="DecryptPageOptions" prefHeight="78.0" prefWidth="192.0">
                      <children>
-                        <CheckBox fx:id="deleteOriginalCheckBox11" mnemonicParsing="false" text="Decrypt With Keyphrase" textFill="#00b69b">
+                        <CheckBox fx:id="decryptWithPhraseCheckBox" mnemonicParsing="false" text="Decrypt With Keyphrase" textFill="#00b69b">
                            <font>
                               <Font name="Microsoft Tai Le Bold" size="13.0" />
                            </font>
                         </CheckBox>
-                        <TextField prefHeight="25.0" prefWidth="194.0" promptText="Keyphrase" />
+                        <PasswordField fx:id="passwordFieldDecrypt" />
                         <Label prefHeight="16.0" prefWidth="192.0" text="Keyphrases Are Case-Sensitive!" textFill="#f53368" wrapText="true" />
                         <VBox fx:id="DecryptPageKeyFileOptions" prefHeight="44.0" prefWidth="162.0">
                            <children>
-                              <CheckBox fx:id="useKeyFileCheckBoxDecrypt" mnemonicParsing="false" text="Decrypt With Key File" textFill="#00b69b">
+                              <CheckBox fx:id="keyFileCheckBoxDecrypt" mnemonicParsing="false" text="Decrypt With Key File" textFill="#00b69b">
                                  <font>
                                     <Font name="Microsoft Tai Le Bold" size="13.0" />
                                  </font>
                               </CheckBox>
-                              <Button fx:id="decryptWithKeyFileDirectoryButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Key File Destination" />
+                              <Button fx:id="keyFileDecryptButton" mnemonicParsing="false" onAction="#handleSelectExistingKeyFile" text="Key File Destination" />
                            </children>
                         </VBox>
                      </children>
